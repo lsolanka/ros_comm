@@ -42,17 +42,17 @@ extern "C" {
 #endif
 
 // Return codes
-const int ROSLZ4_MEMORY_ERROR = -5;
-const int ROSLZ4_PARAM_ERROR = -4;
-const int ROSLZ4_DATA_ERROR = -3;
-const int ROSLZ4_OUTPUT_SMALL = -2;
-const int ROSLZ4_ERROR = -1;
-const int ROSLZ4_OK = 0;
-const int ROSLZ4_STREAM_END = 2;
+static const int ROSLZ4_MEMORY_ERROR = -5;
+static const int ROSLZ4_PARAM_ERROR = -4;
+static const int ROSLZ4_DATA_ERROR = -3;
+static const int ROSLZ4_OUTPUT_SMALL = -2;
+static const int ROSLZ4_ERROR = -1;
+static const int ROSLZ4_OK = 0;
+static const int ROSLZ4_STREAM_END = 2;
 
 // Actions
-const int ROSLZ4_RUN = 0;
-const int ROSLZ4_FINISH = 1;
+static const int ROSLZ4_RUN = 0;
+static const int ROSLZ4_FINISH = 1;
 
 typedef struct {
   char *input_next;
