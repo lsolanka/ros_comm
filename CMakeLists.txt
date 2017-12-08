@@ -7,7 +7,10 @@ HunterGate(
 )
 
 project(ros_comm)
+hunter_add_package(lz4)
 hunter_add_package(catkin)
 hunter_add_package(roscpp_core)
 
 add_subdirectory(utilities/xmlrpcpp)
+add_subdirectory(utilities/roswtf)
+add_subdirectory(utilities/roslz4)
