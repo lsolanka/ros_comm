@@ -3,10 +3,11 @@ project(xmlrpcpp)
 
 find_package(catkin REQUIRED COMPONENTS cpp_common)
 
+set(PROJECT_INSTALLSPACE_LIBRARIES ros::xmlrpcpp)
 # The CFG_EXTRAS is only for compatibility, to be removed in Lunar.
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES ros::xmlrpcpp
+  LIBRARIES xmlrpcpp
   CATKIN_DEPENDS cpp_common
   CFG_EXTRAS xmlrpcpp-extras.cmake
 )
@@ -35,6 +36,11 @@ target_link_libraries(xmlrpcpp ${catkin_LIBRARIES})
 if(WIN32)
   target_link_libraries(xmlrpcpp ws2_32)
 endif()
+
+target_include_directories(xmlrpcpp PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 
 install(DIRECTORY include/${PROJECT_NAME}
   DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}

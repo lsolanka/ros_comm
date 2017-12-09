@@ -23,6 +23,8 @@ list(GET roscpp_VERSION_LIST 2 roscpp_VERSION_PATCH)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/ros/common.h.in ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/ros/common.h)
 
 find_package(Boost REQUIRED COMPONENTS chrono filesystem signals system)
+set(Boost_LIBRARIES Boost::chrono Boost::filesystem Boost::signals
+                    Boost::system)
 
 include_directories(include ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/ros ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
@@ -51,6 +53,7 @@ if(CMAKE_THREAD_LIBS_INIT)
   endif()
 endif()
 
+set(PROJECT_INSTALLSPACE_LIBRARIES ros::roscpp)
 catkin_package(
   INCLUDE_DIRS include ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/ros
   LIBRARIES roscpp ${PTHREAD_LIB}
@@ -130,9 +133,15 @@ target_link_libraries(roscpp
 
 #explicitly install library and includes
 install(TARGETS roscpp
+  EXPORT ${PROJECT_NAME}Targets
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
+install(EXPORT ${PROJECT_NAME}Targets
+    DESTINATION share/${PROJECT_NAME}/cmake
+    NAMESPACE ros::
+    FILE ${PROJECT_NAME}Targets.cmake
+)
 install(DIRECTORY include/
   DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
   FILES_MATCHING PATTERN "*.h")
