@@ -40,6 +40,7 @@ add_subdirectory(tools/rosmsg)
 add_subdirectory(tools/rosout)
 add_subdirectory(tools/rosservice)
 add_subdirectory(utilities/roswtf)
+add_subdirectory(utilities/message_filters)
 add_subdirectory(ros_comm)
 
 add_subdirectory(test/test_roscpp)
