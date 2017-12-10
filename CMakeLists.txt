@@ -43,3 +43,5 @@ add_subdirectory(utilities/roswtf)
 add_subdirectory(ros_comm)
 
 add_subdirectory(test/test_roscpp)
+add_subdirectory(test/test_rosbag)
+add_subdirectory(test/test_rosbag_storage)
