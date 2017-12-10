@@ -6,6 +6,7 @@ if(NOT WIN32)
 endif()
 
 find_package(catkin REQUIRED COMPONENTS roscpp rosconsole)
+set(PROJECT_INSTALLSPACE_LIBRARIES ros::${PROJECT_NAME})
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES message_filters
@@ -13,18 +14,27 @@ catkin_package(
 )
 catkin_python_setup()
 
-find_package(Boost REQUIRED COMPONENTS signals thread)
+find_package(Boost CONFIG REQUIRED COMPONENTS signals thread)
 
 include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME} src/connection.cpp)
-target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} Boost::signals Boost::thread)
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 
 install(TARGETS ${PROJECT_NAME}
+  EXPORT ${PROJECT_NAME}Targets
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
+install(EXPORT ${PROJECT_NAME}Targets
+    DESTINATION share/${PROJECT_NAME}/cmake
+    NAMESPACE ros::
+    FILE ${PROJECT_NAME}Targets.cmake)
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
