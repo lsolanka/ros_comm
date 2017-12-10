@@ -9,7 +9,7 @@ catkin_python_setup()
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES ros::roslz4
+  LIBRARIES roslz4
   DEPENDS lz4)
 
 include_directories(include ${lz4_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
@@ -18,6 +18,11 @@ set_source_files_properties(
   src/lz4s.c
 PROPERTIES COMPILE_FLAGS "-Wno-sign-compare")
 target_link_libraries(roslz4 lz4::lz4 ${catkin_LIBRARIES})
+target_include_directories(roslz4 PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
 
 if(NOT ANDROID)
 # Python bindings
