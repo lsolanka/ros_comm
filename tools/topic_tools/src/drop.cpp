@@ -40,19 +40,19 @@ static ros::NodeHandle *g_node = NULL;
 static int g_x = 0, g_y = 1;
 static bool g_advertised = false;
 static string g_output_topic;
-static ros::Publisher g_pub;
+static ros::Publisher* g_pub = NULL;
 
 void in_cb(const boost::shared_ptr<ShapeShifter const>& msg)
 {
   static int s_count = 0;
   if (!g_advertised)
   {
-    g_pub = msg->advertise(*g_node, g_output_topic, 10);
+    *g_pub = msg->advertise(*g_node, g_output_topic, 10);
     g_advertised = true;
     printf("advertised as %s\n", g_output_topic.c_str());
   }
   if (s_count >= g_x)
-    g_pub.publish(msg);
+    g_pub->publish(msg);
   ++s_count;
   if (s_count >= g_y)
     s_count = 0;
@@ -84,10 +84,12 @@ int main(int argc, char **argv)
   else // argc == 5
     g_output_topic = string(argv[4]);
   ros::NodeHandle n;
+  g_pub = new ros::Publisher();
   g_node = &n;
   g_x = atoi(argv[2]);
   g_y = atoi(argv[3]);
   ros::Subscriber sub = n.subscribe<ShapeShifter>(string(argv[1]), 10, in_cb);
   ros::spin();
+  delete g_pub;
   return 0;
 }
