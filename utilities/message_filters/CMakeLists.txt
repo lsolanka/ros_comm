@@ -10,7 +10,8 @@ find_package(catkin REQUIRED COMPONENTS roscpp xmlrpcpp rosconsole)
 set(PROJECT_INSTALLSPACE_LIBRARIES ros::${PROJECT_NAME})
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES message_filters
+  LIBRARIES ${PROJECT_NAME}
+  DEPENDS "Boost COMPONENTS signals thread"
   CATKIN_DEPENDS roscpp xmlrpcpp rosconsole
 )
 catkin_python_setup()
