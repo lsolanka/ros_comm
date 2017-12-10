@@ -129,6 +129,13 @@ add_library(roscpp
 
 add_dependencies(roscpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+target_include_directories(roscpp PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/ros>
+  $<BUILD_INTERFACE:${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}>
+  $<INSTALL_INTERFACE:include>
+)
+
 target_link_libraries(roscpp
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
