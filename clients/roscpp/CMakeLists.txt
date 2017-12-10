@@ -58,7 +58,7 @@ catkin_package(
   INCLUDE_DIRS include ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/ros
   LIBRARIES roscpp ${PTHREAD_LIB}
   CATKIN_DEPENDS cpp_common message_runtime rosconsole roscpp_serialization roscpp_traits rosgraph_msgs rostime std_msgs xmlrpcpp
-  DEPENDS Boost
+  DEPENDS "Boost COMPONENTS chrono filesystem signals system"
 )
 
 include(CheckIncludeFiles)
