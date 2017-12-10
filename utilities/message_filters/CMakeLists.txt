@@ -11,6 +11,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES message_filters
   CATKIN_DEPENDS roscpp rosconsole
+  DEPENDS "Boost COMPONENTS signals thread"
 )
 catkin_python_setup()
 

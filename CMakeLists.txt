@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.3)
 include(cmake/HunterGate.cmake)
 HunterGate(
     URL "https://github.com/lsolanka/hunter/archive/ros-hunter.tar.gz"
-    SHA1 "8c31818fc407587f192a02ee6db87fd8f94c8f0b"
+    SHA1 "f4d73e7a6d3cf927f6d5017377a9c0cb7550db18"
 )
 
 project(ros_comm)

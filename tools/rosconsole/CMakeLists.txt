@@ -14,6 +14,7 @@ set(Boost_LIBRARIES Boost::regex Boost::system Boost::thread)
 set(ROSCONSOLE_BACKEND "" CACHE STRING "Type of rosconsole backend, one of 'log4cxx', 'glog', 'print'")
 set(rosconsole_backend_INCLUDE_DIRS)
 set(rosconsole_backend_LIBRARIES)
+set(rosconsole_backend_INSTALLSPACE_LIBRARIES)
 if(ROSCONSOLE_BACKEND STREQUAL "" OR ROSCONSOLE_BACKEND STREQUAL "log4cxx")
   find_package(Log4cxx QUIET)
   if(NOT LOG4CXX_LIBRARIES)
@@ -23,6 +24,8 @@ if(ROSCONSOLE_BACKEND STREQUAL "" OR ROSCONSOLE_BACKEND STREQUAL "log4cxx")
   if(LOG4CXX_LIBRARIES)
     list(APPEND rosconsole_backend_INCLUDE_DIRS ${LOG4CXX_INCLUDE_DIRS})
     list(APPEND rosconsole_backend_LIBRARIES rosconsole_log4cxx rosconsole_backend_interface ${LOG4CXX_LIBRARIES})
+    list(APPEND rosconsole_backend_INSTALLSPACE_LIBRARIES
+        ros::rosconsole_log4cxx ros::rosconsole_backend_interface ${LOG4CXX_LIBRARIES})
     set(ROSCONSOLE_BACKEND "log4cxx")
   elseif(ROSCONSOLE_BACKEND STREQUAL "log4cxx")
     message(FATAL_ERROR "Couldn't find log4cxx library")
@@ -34,6 +37,8 @@ if(ROSCONSOLE_BACKEND STREQUAL "" OR ROSCONSOLE_BACKEND STREQUAL "glog")
   if(GLOG_FOUND)
     list(APPEND rosconsole_backend_INCLUDE_DIRS ${GLOG_INCLUDE_DIRS})
     list(APPEND rosconsole_backend_LIBRARIES rosconsole_glog rosconsole_backend_interface ${GLOG_LIBRARIES})
+    list(APPEND rosconsole_backend_INSTALLSPACE_LIBRARIES
+        ros::rosconsole_glog ros::rosconsole_backend_interface ${GLOG_LIBRARIES})
     set(ROSCONSOLE_BACKEND "glog")
   elseif(ROSCONSOLE_BACKEND STREQUAL "glog")
     message(FATAL_ERROR "Couldn't find glog library")
@@ -41,14 +46,16 @@ if(ROSCONSOLE_BACKEND STREQUAL "" OR ROSCONSOLE_BACKEND STREQUAL "glog")
 endif()
 if(ROSCONSOLE_BACKEND STREQUAL "" OR ROSCONSOLE_BACKEND STREQUAL "print")
   list(APPEND rosconsole_backend_LIBRARIES rosconsole_print rosconsole_backend_interface)
+  list(APPEND rosconsole_backend_INSTALLSPACE_LIBRARIES
+        ros::rosconsole_print ros::rosconsole_backend_interface)
   set(ROSCONSOLE_BACKEND "print")
 endif()
 message(STATUS "rosconsole backend: ${ROSCONSOLE_BACKEND}")
 
-set(PROJECT_INSTALLSPACE_LIBRARIES ros::rosconsole)
+set(PROJECT_INSTALLSPACE_LIBRARIES ros::rosconsole ${rosconsole_backend_INSTALLSPACE_LIBRARIES})
 catkin_package(
   INCLUDE_DIRS include ${rosconsole_backend_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS}
-  LIBRARIES rosconsole #${rosconsole_backend_LIBRARIES}
+  LIBRARIES rosconsole ${rosconsole_backend_LIBRARIES}
   DEPENDS "Boost COMPONENTS regex system thread"
   CATKIN_DEPENDS cpp_common rostime
   CFG_EXTRAS rosconsole-extras.cmake

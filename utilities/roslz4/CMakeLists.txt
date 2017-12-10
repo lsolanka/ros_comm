@@ -7,6 +7,7 @@ find_package(lz4 CONFIG REQUIRED)
 
 catkin_python_setup()
 
+set(PROJECT_INSTALLSPACE_LIBRARIES ros::roslz4)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES roslz4
