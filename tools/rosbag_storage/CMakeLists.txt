@@ -38,7 +38,7 @@ add_library(rosbag_storage
   src/uncompressed_stream.cpp
 )
 
-target_link_libraries(rosbag_storage ${catkin_LIBRARIES} ${Boost_LIBRARIES} BZip2::bz2 ${console_bridge_LIBRARIES})
+target_link_libraries(rosbag_storage ${catkin_LIBRARIES} ${Boost_LIBRARIES} BZip2::bz2 ros::console_bridge)
 
 target_include_directories(rosbag_storage PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
