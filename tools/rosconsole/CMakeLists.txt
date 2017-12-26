@@ -32,17 +32,11 @@ if(ROSCONSOLE_BACKEND STREQUAL "" OR ROSCONSOLE_BACKEND STREQUAL "log4cxx")
   endif()
 endif()
 if(ROSCONSOLE_BACKEND STREQUAL "" OR ROSCONSOLE_BACKEND STREQUAL "glog")
-  find_package(PkgConfig)
-  pkg_check_modules(GLOG QUIET libglog)
-  if(GLOG_FOUND)
-    list(APPEND rosconsole_backend_INCLUDE_DIRS ${GLOG_INCLUDE_DIRS})
-    list(APPEND rosconsole_backend_LIBRARIES rosconsole_glog rosconsole_backend_interface ${GLOG_LIBRARIES})
-    list(APPEND rosconsole_backend_INSTALLSPACE_LIBRARIES
-        ros::rosconsole_glog ros::rosconsole_backend_interface ${GLOG_LIBRARIES})
-    set(ROSCONSOLE_BACKEND "glog")
-  elseif(ROSCONSOLE_BACKEND STREQUAL "glog")
-    message(FATAL_ERROR "Couldn't find glog library")
-  endif()
+  hunter_add_package(glog)
+  find_package(glog CONFIG REQUIRED)
+  list(APPEND rosconsole_backend_INSTALLSPACE_LIBRARIES
+       ros::rosconsole_glog ros::rosconsole_backend_interface)
+  set(ROSCONSOLE_BACKEND "glog")
 endif()
 if(ROSCONSOLE_BACKEND STREQUAL "" OR ROSCONSOLE_BACKEND STREQUAL "print")
   list(APPEND rosconsole_backend_LIBRARIES rosconsole_print rosconsole_backend_interface)
@@ -56,7 +50,7 @@ set(PROJECT_INSTALLSPACE_LIBRARIES ros::rosconsole ${rosconsole_backend_INSTALLS
 catkin_package(
   INCLUDE_DIRS include ${rosconsole_backend_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS}
   LIBRARIES rosconsole ${rosconsole_backend_LIBRARIES}
-  DEPENDS "Boost COMPONENTS regex system thread"
+  DEPENDS "Boost COMPONENTS regex system thread" glog
   CATKIN_DEPENDS cpp_common rostime
   CFG_EXTRAS rosconsole-extras.cmake
 )
