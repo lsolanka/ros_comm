@@ -39,6 +39,7 @@ if(ROSCONSOLE_BACKEND STREQUAL "" OR ROSCONSOLE_BACKEND STREQUAL "glog")
                                            glog::glog)
   list(APPEND rosconsole_backend_INSTALLSPACE_LIBRARIES
       ros::rosconsole_glog ros::rosconsole_backend_interface)
+  set(ROSCONSOLE_DEPENDS "glog")
   set(ROSCONSOLE_BACKEND "glog")
 endif()
 if(ROSCONSOLE_BACKEND STREQUAL "" OR ROSCONSOLE_BACKEND STREQUAL "print")
@@ -53,7 +54,7 @@ set(PROJECT_INSTALLSPACE_LIBRARIES ros::rosconsole ${rosconsole_backend_INSTALLS
 catkin_package(
   INCLUDE_DIRS include ${rosconsole_backend_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS}
   LIBRARIES rosconsole ${rosconsole_backend_LIBRARIES}
-  DEPENDS "Boost COMPONENTS regex system thread"
+  DEPENDS "Boost COMPONENTS regex system thread" ${ROSCONSOLE_DEPENDS}
   CATKIN_DEPENDS cpp_common rostime
   CFG_EXTRAS rosconsole-extras.cmake
 )
