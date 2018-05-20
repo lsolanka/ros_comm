@@ -38,7 +38,7 @@ if(ROSCONSOLE_BACKEND STREQUAL "" OR ROSCONSOLE_BACKEND STREQUAL "glog")
   list(APPEND rosconsole_backend_LIBRARIES rosconsole_glog rosconsole_backend_interface
                                            glog::glog)
   list(APPEND rosconsole_backend_INSTALLSPACE_LIBRARIES
-      ros::rosconsole_glog ros::rosconsole_backend_interface glog::glog)
+      ros::rosconsole_glog ros::rosconsole_backend_interface)
   set(ROSCONSOLE_BACKEND "glog")
 endif()
 if(ROSCONSOLE_BACKEND STREQUAL "" OR ROSCONSOLE_BACKEND STREQUAL "print")
