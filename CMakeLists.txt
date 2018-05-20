@@ -2,21 +2,21 @@ cmake_minimum_required(VERSION 2.8.3)
 
 include(cmake/HunterGate.cmake)
 HunterGate(
-    URL "https://github.com/lsolanka/hunter/archive/v0.19.210-9.tar.gz"
-    SHA1 "f37d55577d4f8aa07de5da32baf8db383a1f3984"
+  URL "https://github.com/ruslo/hunter/archive/v0.21.3.tar.gz"
+  SHA1 "67346d2d3958fe293a33f3eda59da295a9af9bf5"
 )
 
 project(ros_comm)
+
 hunter_add_package(Boost
     COMPONENTS date_time filesystem program_options regex system chrono signals thread)
 hunter_add_package(BZip2)
 hunter_add_package(lz4)
-hunter_add_package(ros-catkin)
-hunter_add_package(ros-roscpp_core)
-hunter_add_package(ros-ros)
-hunter_add_package(ros-message_generation)
-hunter_add_package(ros-ros_comm_msgs)
-#hunter_add_package(ros-cmake_modules)
+hunter_add_package(catkin)
+hunter_add_package(roscpp_core)
+hunter_add_package(ros)
+hunter_add_package(ros_message_generation)
+hunter_add_package(ros_comm_msgs)
 
 find_package(Boost CONFIG REQUIRED
     COMPONENTS date_time filesystem program_options regex system chrono signals thread)
