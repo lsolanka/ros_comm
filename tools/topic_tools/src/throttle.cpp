@@ -51,8 +51,8 @@ double g_window = 1.0; // 1 second window for starters
 bool g_advertised = false;
 string g_output_topic;
 string g_input_topic;
-ros::Publisher* g_pub = NULL;
-ros::Subscriber* g_sub = NULL;
+ros::Publisher g_pub;
+ros::Subscriber* g_sub;
 bool g_use_messages;
 ros::Time g_last_time;
 bool g_use_wallclock;
@@ -105,13 +105,13 @@ void in_cb(const ros::MessageEvent<ShapeShifter>& msg_event)
         latch = true;
       }
     }
-    *g_pub = msg->advertise(*g_node, g_output_topic, 10, latch, conn_cb);
+    g_pub = msg->advertise(*g_node, g_output_topic, 10, latch, conn_cb);
     g_advertised = true;
     printf("advertised as %s\n", g_output_topic.c_str());
   }
   // If we're in lazy subscribe mode, and nobody's listening, 
   // then unsubscribe, #3546.
-  if(g_lazy && !g_pub->getNumSubscribers())
+  if(g_lazy && !g_pub.getNumSubscribers())
   {
     ROS_DEBUG("lazy mode; unsubscribing");
     delete g_sub;
@@ -128,7 +128,7 @@ void in_cb(const ros::MessageEvent<ShapeShifter>& msg_event)
         now = ros::Time::now();
       if((now - g_last_time) > g_period)
       {
-        g_pub->publish(msg);
+        g_pub.publish(msg);
         g_last_time = now;
       }
     }
@@ -149,7 +149,7 @@ void in_cb(const ros::MessageEvent<ShapeShifter>& msg_event)
         bytes += i->len;
       if (bytes < g_bps)
       {
-        g_pub->publish(msg);
+        g_pub.publish(msg);
         g_sent.push_back(Sent(t, msg->size()));
       }
     }
@@ -229,11 +229,9 @@ int main(int argc, char **argv)
   }
 
   ros::NodeHandle n;
-  g_pub = new ros::Publisher();
   g_node = &n;
   subscribe();
   ros::spin();
-  delete g_pub;;
   return 0;
 }
 

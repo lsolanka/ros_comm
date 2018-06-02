@@ -44,7 +44,7 @@ bool g_advertised = false;
 string g_input_topic;
 string g_output_topic;
 string g_monitor_topic;
-ros::Publisher* g_pub = NULL;
+ros::Publisher g_pub;
 ros::Subscriber* g_sub;
 ros::Timer g_timer;
 bool g_lazy;
@@ -97,19 +97,19 @@ void in_cb(const ros::MessageEvent<ShapeShifter>& msg_event)
         latch = true;
       }
     }
-    *g_pub = msg->advertise(*g_node, g_output_topic, 10, latch, conn_cb);
+    g_pub = msg->advertise(*g_node, g_output_topic, 10, latch, conn_cb);
     g_advertised = true;
     ROS_INFO("advertised as %s\n", g_output_topic.c_str());
   }
   // If we're in lazy subscribe mode, and nobody's listening, 
   // then unsubscribe, #3389.
-  if((g_lazy || g_stealth) && !g_pub->getNumSubscribers())
+  if((g_lazy || g_stealth) && !g_pub.getNumSubscribers())
   {
     ROS_DEBUG("lazy mode; unsubscribing");
     unsubscribe();
   }
   else
-    g_pub->publish(msg);
+    g_pub.publish(msg);
 }
 
 void timer_cb(const ros::TimerEvent&)
@@ -165,7 +165,6 @@ int main(int argc, char **argv)
   g_node = &n;
   
   ros::NodeHandle pnh("~");
-  g_pub = new ros::Publisher();
   bool unreliable = false;
   pnh.getParam("unreliable", unreliable);
   pnh.getParam("lazy", g_lazy);
@@ -183,7 +182,6 @@ int main(int argc, char **argv)
 
   subscribe();
   ros::spin();
-  delete g_pub;
   return 0;
 }
 
