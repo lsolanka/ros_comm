@@ -52,7 +52,7 @@ message(STATUS "rosconsole backend: ${ROSCONSOLE_BACKEND}")
 
 set(PROJECT_INSTALLSPACE_LIBRARIES ros::rosconsole ${rosconsole_backend_INSTALLSPACE_LIBRARIES})
 catkin_package(
-  INCLUDE_DIRS include ${rosconsole_backend_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS}
+  INCLUDE_DIRS include ${rosconsole_backend_INCLUDE_DIRS}
   LIBRARIES rosconsole ${rosconsole_backend_LIBRARIES}
   DEPENDS "Boost COMPONENTS regex system thread" ${ROSCONSOLE_DEPENDS}
   CATKIN_DEPENDS cpp_common rostime
