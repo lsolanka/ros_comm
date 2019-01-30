@@ -16,7 +16,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES rosbag_storage
   CATKIN_DEPENDS roslz4
-  DEPENDS console_bridge "Boost COMPONENTS date_time filesystem program_options regex"
+  DEPENDS console_bridge "Boost COMPONENTS date_time filesystem program_options regex" BZip2
 )
 
 # Support large bags (>2GB) on 32-bit systems
