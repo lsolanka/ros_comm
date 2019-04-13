@@ -1,0 +1,12 @@
+[submodule "submodules/rosconsole"]
+	path = submodules/rosconsole
+	url = file:///home/lukas/work/ros-hunterisation/git-repo/ros_comm/../rosconsole
+	branch = pr.hunter-1.13.7
+[submodule "submodules/class_loader"]
+	path = submodules/class_loader
+	url = file:///home/lukas/work/ros-hunterisation/git-repo/ros_comm/../class_loader
+	branch = pr.hunter-0.4.1
+[submodule "submodules/pluginlib"]
+	path = submodules/pluginlib
+	url = file:///home/lukas/work/ros-hunterisation/git-repo/ros_comm/../pluginlib
+	branch = pr.hunter-1.12.1

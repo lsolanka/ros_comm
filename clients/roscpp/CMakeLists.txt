@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(roscpp)
 
-if(NOT WIN32)
-  set_directory_properties(PROPERTIES COMPILE_OPTIONS "-std=c++11;-Wall;-Wextra")
-endif()
-
 find_package(catkin REQUIRED COMPONENTS
   cpp_common message_generation rosconsole roscpp_serialization roscpp_traits rosgraph_msgs rostime std_msgs xmlrpcpp
 )
@@ -23,6 +19,8 @@ list(GET roscpp_VERSION_LIST 2 roscpp_VERSION_PATCH)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/ros/common.h.in ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/ros/common.h)
 
 find_package(Boost REQUIRED COMPONENTS chrono filesystem signals system)
+set(Boost_LIBRARIES Boost::chrono Boost::filesystem Boost::signals
+                    Boost::system)
 
 include_directories(include ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/ros ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 
@@ -51,11 +49,12 @@ if(CMAKE_THREAD_LIBS_INIT)
   endif()
 endif()
 
+set(PROJECT_INSTALLSPACE_LIBRARIES ros::roscpp ${PTHREAD_LIB})
 catkin_package(
   INCLUDE_DIRS include ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/ros
   LIBRARIES roscpp ${PTHREAD_LIB}
   CATKIN_DEPENDS cpp_common message_runtime rosconsole roscpp_serialization roscpp_traits rosgraph_msgs rostime std_msgs xmlrpcpp
-  DEPENDS Boost
+  DEPENDS "Boost COMPONENTS chrono filesystem signals system"
 )
 
 include(CheckIncludeFiles)
@@ -126,6 +125,13 @@ add_library(roscpp
 
 add_dependencies(roscpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+target_include_directories(roscpp PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/ros>
+  $<BUILD_INTERFACE:${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}>
+  $<INSTALL_INTERFACE:include>
+)
+
 target_link_libraries(roscpp
   ${catkin_LIBRARIES}
   ${Boost_LIBRARIES}
@@ -133,9 +139,15 @@ target_link_libraries(roscpp
 
 #explicitly install library and includes
 install(TARGETS roscpp
+  EXPORT ${PROJECT_NAME}Targets
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
+install(EXPORT ${PROJECT_NAME}Targets
+    DESTINATION share/${PROJECT_NAME}/cmake
+    NAMESPACE ros::
+    FILE ${PROJECT_NAME}Targets.cmake
+)
 install(DIRECTORY include/
   DESTINATION ${CATKIN_GLOBAL_INCLUDE_DESTINATION}
   FILES_MATCHING PATTERN "*.h")

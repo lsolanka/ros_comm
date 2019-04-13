@@ -24,6 +24,7 @@ add_service_files(DIRECTORY srv
 
 generate_messages(DEPENDENCIES std_msgs)
 
+set(PROJECT_INSTALLSPACE_LIBRARIES ros::topic_tools)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES topic_tools
@@ -34,6 +35,10 @@ catkin_add_env_hooks(20.transform SHELLS bash DIRECTORY ${CMAKE_CURRENT_SOURCE_D
 
 add_library(topic_tools src/shape_shifter.cpp src/parse.cpp)
 target_link_libraries(topic_tools ${catkin_LIBRARIES})
+target_include_directories(topic_tools PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
 
 add_executable(switch_mux src/switch_mux.cpp)
 target_link_libraries(switch_mux topic_tools ${catkin_LIBRARIES})
@@ -56,9 +61,15 @@ add_executable(throttle src/throttle.cpp)
 target_link_libraries(throttle topic_tools ${catkin_LIBRARIES})
 
 install(TARGETS topic_tools
+  EXPORT ${PROJECT_NAME}Targets
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
+install(EXPORT ${PROJECT_NAME}Targets
+    DESTINATION share/${PROJECT_NAME}/cmake
+    NAMESPACE ros::
+    FILE ${PROJECT_NAME}Targets.cmake
+)
 
 install(TARGETS switch_mux mux demux relay drop throttle
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
@@ -88,9 +99,8 @@ if(CATKIN_ENABLE_TESTING)
   endif()
 
   if(GTEST_FOUND)
-    include_directories(${GTEST_INCLUDE_DIRS})
     add_executable(${PROJECT_NAME}-test_shapeshifter EXCLUDE_FROM_ALL test/test_shapeshifter.cpp)
-    target_link_libraries(${PROJECT_NAME}-test_shapeshifter ${GTEST_LIBRARIES} topic_tools)
+    target_link_libraries(${PROJECT_NAME}-test_shapeshifter GTest::main topic_tools)
   endif()
   if(TARGET tests)
     add_dependencies(tests ${PROJECT_NAME}-test_shapeshifter)

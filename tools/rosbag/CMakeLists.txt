@@ -6,8 +6,8 @@ if(NOT WIN32)
 endif()
 
 find_package(catkin REQUIRED COMPONENTS rosbag_storage rosconsole roscpp std_srvs topic_tools xmlrpcpp)
-find_package(Boost REQUIRED COMPONENTS date_time regex program_options filesystem)
-find_package(BZip2 REQUIRED)
+find_package(Boost CONFIG REQUIRED COMPONENTS date_time regex program_options filesystem)
+find_package(BZip2 CONFIG REQUIRED)
 
 catkin_python_setup()
 
@@ -18,6 +18,7 @@ include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS}
   ${BZIP2_INCLUDE_DIR}
 )
 
+set(PROJECT_INSTALLSPACE_LIBRARIES ros::rosbag)
 catkin_package(
   LIBRARIES rosbag
   INCLUDE_DIRS include
@@ -28,8 +29,13 @@ add_library(rosbag
   src/recorder.cpp
   src/time_translator.cpp)
 
-target_link_libraries(rosbag ${catkin_LIBRARIES} ${Boost_LIBRARIES}
-  ${BZIP2_LIBRARIES}
+target_link_libraries(rosbag ${catkin_LIBRARIES} Boost::date_time Boost::regex
+    Boost::program_options Boost::filesystem BZip2::bz2
+)
+
+target_include_directories(rosbag PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
 )
 
 add_executable(record src/record.cpp)
@@ -47,9 +53,14 @@ install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
   FILES_MATCHING PATTERN "*.h")
 install(TARGETS rosbag
+  EXPORT ${PROJECT_NAME}Targets
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION})
+install(EXPORT ${PROJECT_NAME}Targets
+    DESTINATION share/${PROJECT_NAME}/cmake
+    NAMESPACE ros::
+    FILE ${PROJECT_NAME}Targets.cmake)
 install(TARGETS record play
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
